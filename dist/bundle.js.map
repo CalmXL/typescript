@@ -1,0 +1,1 @@
+{"version":3,"file":"bundle.js","sources":["../src/index.ts"],"sourcesContent":["// 入口文件\nconst a: string = 'abc';\n\nconsole.log(a);\n"],"names":[],"mappings":";;;CAAA;CACA,MAAM,CAAC,GAAW,KAAK,CAAC;CAExB,OAAO,CAAC,GAAG,CAAC,CAAC,CAAC;;;;;;"}

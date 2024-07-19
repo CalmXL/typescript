@@ -11,7 +11,7 @@ console.log(__dirname, __filename);
 // => /Users/xulei/code/js++/i/zhufeng/ts/rollup.config.js
 
 export default {
-  input: resolve(__dirname, 'src/index.ts'),
+  input: resolve(__dirname, 'src/3_basic/index.ts'),
   output: {
     format: 'iife',
     file: resolve(__dirname, 'dist/bundle.js'),

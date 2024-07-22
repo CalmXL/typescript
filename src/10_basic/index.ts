@@ -103,6 +103,32 @@ type MyParameters<T extends (...args: any[]) => any> =
 type R10 = MyParameters<typeof getObj>
 
 
+class A {
+  constructor (name: string, age: number) {
+  }
+}
 
+type MyConstructParameters<T extends new (...args: any[]) => any> = T extends new (...args: infer R) => any ? R : never;
+// type R11 = ConstructorParameters<typeof A>;
+type R11 = MyConstructParameters<typeof A>;
 
+type MyInstanceType<T extends new (...args: any[]) => any> = T extends new (...args: any[]) => infer R ? R : never;
+// type R12 = InstanceType<typeof A>;
+type R12 = MyInstanceType<typeof A>;
+
+  
+function createInstance<T extends new (...args: any[]) => any> (
+  target: T, 
+  ...args: ConstructorParameters<T>
+): InstanceType<T> {
+  return new target(...args);
+}
+
+class Person {
+  constructor(public name: string, public age: number) {}
+}
+
+let r = createInstance(Person, 'xulei', 20);
+
+// infer 中实现了很多的内置类型 ReturnType, Parameters, ConstructParameters, InstanceType
 export { }

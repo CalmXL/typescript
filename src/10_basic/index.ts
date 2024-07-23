@@ -124,11 +124,97 @@ function createInstance<T extends new (...args: any[]) => any> (
   return new target(...args);
 }
 
-class Person {
-  constructor(public name: string, public age: number) {}
-}
+// class Person {
+//   constructor(public name: string, public age: number) {}
+// }
 
-let r = createInstance(Person, 'xulei', 20);
+// let r = createInstance(Person, 'xulei', 20);
 
 // infer 中实现了很多的内置类型 ReturnType, Parameters, ConstructParameters, InstanceType
+
+
+// swap
+type Swap<T> = T extends [infer A1, infer A2] ? [A2, A1] : never; 
+type R13 = Swap<['xl', 39]>; // 30, 'jw'
+
+// 头尾交换
+type SwapHeadTail<T> = T extends [infer H, ...infer N, infer T] ? [T, ...N, H] : never;
+type R14 = SwapHeadTail<[1, 2, 3, 4, 5, 6 ,7]>; 
+
+
+// promise 如果返回的是一个 promise, 会不停的解析这个 promise 
+// 通过 infer 递归推导
+type PromiseReturnValue<T> = T extends Promise<infer P> ? PromiseReturnValue<P> : T;  
+type R15 = PromiseReturnValue<Promise<Promise<Promise<100>>>>
+
+// 将元祖转换成联合类型 [number, boolean, string] -> number | boolean | string
+// type TupleToArray = [number, boolean, string][number];
+type ElementToUnion<T> = T extends Array<infer E> ? E : never;
+type TupleToArray = ElementToUnion<[number, boolean, string]>;
+
+
+// 重构类型的结构 T & K
+
+// Partial Require Readonly 属性修饰符
+// Pick Omit Record  
+
+interface IAddress {
+  n: 100,
+  x: 200,
+  y: 300
+}
+
+interface Person {
+  name: string;
+  age: number;
+  address: IAddress;
+}
+
+type MyPartial<T> = {
+  // 循环属性，增加可选属性
+  [K in keyof T]?: T[K];
+}
+
+type DeepPartial<T> = {
+  // 循环属性，增加可选属性
+  [K in keyof T]?: T[K] extends object ? DeepPartial<T[K]> : T[K];
+}
+
+// let p: Partial<Person> = {
+//   name: 'xulei'
+// }
+// let p: MyPartial<Person> = {
+//     name: 'xulei',
+//     address: {}
+//   }
+let p2: DeepPartial<Person> = {
+    name: 'xulei',
+    address: {}
+  }
+
+// Required 只有第一层
+type Required<T> = {
+  [K in keyof T]-?: T[K]
+}
+
+let p3: Required<DeepPartial<Person>> = {
+  name: 'xl',
+  age: 30,
+  address: {}
+}
+
+type Mutate<T> = {
+  -readonly [K in keyof T]: T[K]
+}
+
+let p4: Mutate<Readonly<Required<DeepPartial<Person>>>> = {
+  name: 'xl',
+  age: 29,
+  address: {}
+}
+
+
+p4.name = 'xh'; // => 无法为“name”赋值，因为它是只读属性。
+
+
 export { }

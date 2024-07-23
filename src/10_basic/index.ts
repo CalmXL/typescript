@@ -180,7 +180,7 @@ type DeepPartial<T> = {
   [K in keyof T]?: T[K] extends object ? DeepPartial<T[K]> : T[K];
 }
 
-// let p: Partial<Person> = {
+// let p:  <Person> = {
 //   name: 'xulei'
 // }
 // let p: MyPartial<Person> = {
@@ -213,8 +213,73 @@ let p4: Mutate<Readonly<Required<DeepPartial<Person>>>> = {
   address: {}
 }
 
-
 p4.name = 'xh'; // => 无法为“name”赋值，因为它是只读属性。
 
+// Pick Omit 对象的重构
+type MyPick <T, K extends keyof T> = {
+  [Key in K]: T[Key];
+}
+
+// type PickPerson = Pick<Person, "name" | "age">;
+type PickPerson = MyPick<Person, "name" | "age">;
+let person4: PickPerson; 
+
+
+// 在很多属性中挑选需要的， 在很多属性中排除不需要的
+type MyOmit<T, K extends keyof any> = Pick<T, Exclude<keyof T, K>>
+// type person5 = Omit<Person, "address">;
+type person5 = MyOmit<Person, "address">;
+
+// 映射类型 Pick + Omit 配合 Extract 和 Exclude 可以实现各种各样的类型
+
+// 针对这种情况应该将 B 有的属性，在 A 里面移除掉
+function mixin<T extends object, K extends object >(a: T, b: K): Omit<T, keyof K> & K {
+  return {
+    ...a,
+    ...b
+  }
+}
+
+let x = mixin({
+  name: 'xl',
+  age: 20,
+  c: 3
+}, {
+  name: 123,
+  age: 28,
+  b: 2
+})
+
+type nameType = (typeof x)['name'];
+
+// keyof 取Key
+// typeof 取类型的
+// 索引查询 []
+// in 循环的
+// extends 条件
+
+
+// 只想要 key -> value 的格式 可以采用 Record 的格式
+// 一些映射类型可以采用 Record 会合理一些
+let p6 :Record<string, any> = [];
+
+function map<T extends keyof any, K, R> (
+  obj: Record<T, K>, 
+  callback: (value: K, key: T) => R
+  ) {
+  let result = {} as Record<T, R>;
+  for (let key in obj) {
+    result[key] = callback(obj[key], key)
+  }
+
+  return result
+}
+
+let mr = map({
+  name: 'xl',
+  age: 20
+}, (value, index) => {
+  return 'abc';
+})
 
 export { }

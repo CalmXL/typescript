@@ -96,5 +96,65 @@ let t2: (instance: Child) => Child = (instance: Parent) => new GrandSon(); // �
 // 传递的函数 (传父(逆变)返子(协变))
 
 // 对于函数的兼容性而言, 参数的个数要少, 传递的可以是父类, 返回值可以返回儿子
+// strictFunctionTypes 开启后就变成了双向协变(参数和返回值)
+
+
+interface TT<T> {
+
+}
+
+let o1: TT<string>;
+let o2!: TT<number>;
+
+o1 ='abc';
+o2 = 213;
+o1 = o2;
+
+enum E1 {
+
+}
+
+enum E2 {
+
+}
+
+// 枚举是不具备兼容性的
+// let e1!: E1;
+// let e2!: E2;
+
+// e1 = e2;
+
+// 类的兼容性
+class A {
+  public name!: string;
+  protected score!: number;
+}
+
+class B {
+  public name!: string;
+  protected score!: number;
+  public age!: number;
+}
+
+// let b: B = new A();
+let a: A = new B(); // 比较的是属性， 不符合就不兼容， 如果类中存在私有属性，或者受保护的属性
+
+// ts 比较类型结构的时候，比较的是属性和方法
+// 如果属性和方法都满足则兼容，有些比较特殊
+
+// 基础类型和对象的兼容，接口的兼容，泛型的兼容，枚举的兼容，类的兼容
+
+// 在其他语言中，存在标称类型 (根据名称来区分类型), 通过交叉类型实现标称类型
+type Nominal<T, Tag extends string> = T & { _tag: Tag }
+type BTC = Nominal<number, 'btc'>;
+type USDT = Nominal<number, 'usdt'>;
+let btc = 1000 as BTC;
+let usdt = 2000 as USDT;
+
+function getVal (val: BTC) {
+  return val; 
+}
+getVal(btc)
+// getVal(usdt)
 
 export { };

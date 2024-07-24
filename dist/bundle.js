@@ -3,35 +3,18 @@
 (function () {
   'use strict';
 
-  // class Animal {
-  //   constructor(public name: string, public age: number) { }
-  // }
-  // 获取最大值
-  class MyArray {
-      constructor() {
-          this.arr = [];
-      }
-      set(val) {
-          this.arr.push(val);
-      }
-      getMax() {
-          let arr = this.arr;
-          let max = arr[0];
-          for (let i = 0; i < arr.length; i++) {
-              let cur = arr[i];
-              if (cur > max) {
-                  max = cur;
-              }
-          }
-          return max;
+  // @classDecoration
+  // @OverrideAnimal
+  class Animal {
+      eat() {
+          console.log('动物 original');
       }
   }
-  let arr = new MyArray();
-  arr.set(1);
-  arr.set(100);
-  arr.set(300);
-  const res = arr.getMax();
-  console.log(res);
+  const animal = new Animal();
+  // animal.eat();
+  // animal.drink();
+  // 方法装饰器
+  console.log(animal);
 
 })();
 //# sourceMappingURL=bundle.js.map

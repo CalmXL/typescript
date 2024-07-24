@@ -17,5 +17,8 @@
     "rollup-plugin-serve": "^1.1.1",
     "rollup-plugin-typescript2": "^0.36.0",
     "typescript": "^5.5.3"
+  },
+  "dependencies": {
+    "reflect-metadata": "^0.2.2"
   }
 }

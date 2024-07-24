@@ -20,7 +20,7 @@ export default {
   },
   plugins: [
     nodeResolve({
-       extensions: ['.js', '.ts']
+      extensions: ['.js', '.ts']
     }),
     ts({
       tsconfig: resolve(__dirname, 'tsconfig.json')
@@ -32,5 +32,5 @@ export default {
     }),
     livereload()
   ],
- 
+
 }

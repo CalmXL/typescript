@@ -1,142 +1,83 @@
-import 'reflect-metadata'
+// 依赖注入
+interface Monitor { }
 
-// const REQUIRED_KEY = Symbol();
-// function Required() {
-//   return function (
-//     target: object,
-//     key: string
-//   ) {
-//     // 先记录哪些属性是必填的. 效验的时候来找这些属性是否有值
+interface Host { }
 
-//     // 在记录的时候不要给属性添加, 后续效验如果没这个属性, 那就找不到记录了
-//     const requiredKeys: string[] = Reflect.getMetadata(REQUIRED_KEY, target) || [];
+class Container {
+  private instance = new Map(); // 所有的实例
+  public properties = new Map(); // 存放属性对应的信息
 
-//     Reflect.defineMetadata(REQUIRED_KEY, [...requiredKeys, key], target)
-//   }
-// }
-
-// function validate(instance: object) {
-//   let existKeys = Reflect.ownKeys(instance);
-
-//   const requiredKeys = Reflect.getMetadata(REQUIRED_KEY, instance);
-
-//   for (let key of requiredKeys) {
-//     if (!existKeys.includes(key)) {
-//       throw new Error('this is ' + key + ' is not exist');
-//     }
-//   }
-// }
-
-
-// class Person {
-//   @Required()
-//   name!: string;
-//   @Required()
-//   age!: number;
-// }
-
-// // 1. 先要求属性必填
-
-// const p = new Person();
-// p.name = '123';
-
-// validate(p);
-
-// ********************************************
-
-// function Required() {
-//   return function (target: object, key: string) {}
-// }
-// function validate () {}
-
-// class Person {
-//   @Required()
-//   name!: string;
-//   @Required()
-//   age!: number;
-// }
-
-// // 1. 先要求属性必填
-
-// const p = new Person();
-// // -- @ts-ignore 不管有咩有错误, 丧失效验
-// // @ts-expect-error  确定下一行报错
-// // 
-// p.name = 13; // 效验: 提示 name 属性是字符串而非 number
-
-// validate(p);
-
-// *********************************************
-
-const REQUIRED_KEY = Symbol();
-const VALIDATE_TYPE_KEY = Symbol();
-function Required() {
-  return function (
-    target: object,
-    key: string
-  ) {
-    // 先记录哪些属性是必填的. 效验的时候来找这些属性是否有值
-
-    // 在记录的时候不要给属性添加, 后续效验如果没这个属性, 那就找不到记录了
-    const requiredKeys: string[] = Reflect.getMetadata(REQUIRED_KEY, target) || [];
-
-    Reflect.defineMetadata(REQUIRED_KEY, [...requiredKeys, key], target)
-  }
-}
-
-function validate(instance: any) {
-  let existKeys = Reflect.ownKeys(instance);
-
-  const requiredKeys = Reflect.getMetadata(REQUIRED_KEY, instance);
-
-
-  for (let key of requiredKeys) {
-    const validateType = Reflect.getMetadata(VALIDATE_TYPE_KEY, instance, key);
-    
-    if (!existKeys.includes(key)) {
-      throw new Error('this is ' + key + ' is not exist');
+  bind<T>(key: string, creator: () => T) {
+    if (!this.instance.has(key)) {
+      this.instance.set(key, creator())
     }
+  }
 
-    if (validateType) {
-      if (typeof instance[key] !== validateType) {
-        throw new Error(`这个 ${key} 类型不正确, 应为 ${validateType} `);
+  resolve<T>(key: string): T {
+    // 将记录的属性自动的注入到当前的实例上
+    let instance = this.instance.get(key);
+    for (let prop of this.properties) {
+      // Compute-monitor => Monitor
+      let [key, ServiceKey] = prop;
+      let [className, propName] = key.split('-');
+
+      // 检索是否给当前的类注入
+      if (instance.constructor.name !== className) {
+        continue;
       }
+
+      // 自动装载
+      instance[propName] = this.resolve(ServiceKey)
     }
+
+    return instance;
   }
 
-
-}
-
-function ValueType(type: Type) {
-  return function (
-    target: object,
-    key: string
-  ) {
-    // 描述当前属性的类型
-    Reflect.defineMetadata(VALIDATE_TYPE_KEY, type, target, key);
+  bootstrap() {
+    console.log('启动电脑', this);
   }
 }
 
-enum Type {
-  String = 'string',
-  Number = 'number'
+const c = new Container();
+
+// 提供到容器中, 自动会创建在实例容器中
+@Provide('Monitor')
+class Monitor27inch implements Monitor { }
+@Provide('Host')
+class AppleHost implements Host { }
+
+// DI 依赖注入, 不需要在类中硬编码
+@Provide('Computer')
+class Computer {
+  @Inject('Monitor')
+  monitor!: Monitor27inch;
+  @Inject('Host')
+  host!: AppleHost;
+
+  bootstrap() {
+    console.log('启动: ', this);
+  }
 }
 
-class Person {
-  @ValueType(Type.String)
-  @Required()
-  name!: string;
-  @ValueType(Type.Number)
-  @Required()
-  age!: number;
+
+function Provide(key: string) {
+  return (target: any) => {
+    c.bind(key, () => new target());
+  }
 }
 
-const p = new Person();
-p.name = 'xl';
-// p.age = 123;
+function Inject(injectKey: string) {
+  return (target: object, key: string) => {
+    // 当前在哪个原型上 注入了哪些属性,做一个映射关系,稍后解析的时候
+    c.properties.set(`${target.constructor.name}-${key}`, injectKey);
+    // 关联就是哪个类,对应的哪个属性,用哪个标识找到实例进行赋值
+    // console.log(c.properties);
+  }
+}
 
-validate(p);
 
-// 装饰器 + 反射元数据 可以做一些校验, 后续处理一些逻辑.
+const computer = c.resolve<Computer>('Computer');
+
+computer.bootstrap();
 
 export { };

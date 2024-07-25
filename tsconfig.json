@@ -104,5 +104,10 @@
     /* Completeness */
     // "skipDefaultLibCheck": true,                      /* Skip type checking .d.ts files that are included with TypeScript. */
     "skipLibCheck": true /* Skip type checking all .d.ts files. */
-  }
+  },
+  // "files": ["src/15_basic/a.ts"] /* 用于 AMD 打包*/
+  // 找声明文件,默认整个项目,可以手动指定加载目录
+  "include": ["src/**/*.ts", "typing/*"],
+  // 排除指定文件
+  // "exclude": ["typing/global.d.ts"]
 }

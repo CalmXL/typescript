@@ -83,7 +83,8 @@ function getResult (strOrNumOrBool: string | number | boolean) {
   validate(strOrNumOrBool)
 }
 
-let union: string | number | boolean | never; // never 和 其他类型联合类型始终是不显示的
+// never 和 其他类型联合类型始终是不显示的
+let union: string | number | boolean | never; 
 
 // object 对象类型
 // {}, Object 不采用， 偶尔使用 {} 表示对象上无任何属性。都可以将任何值赋予给 {} 或 Object
@@ -106,7 +107,7 @@ console.log(s1 === s2); // => true
 
 let b1: bigint = BigInt(Number.MAX_SAFE_INTEGER);
 
-// any 任何类型 anyScript, 有时候我们要对类型做转化，无法直接转化，你认为可以这个值赋予给任何类型
+// any 任何类型 也有 anyScript 的玩笑, 有时候我们要对类型做转化，无法直接转化，你认为可以这个值赋予给任何类型
 
 // let str:any = function() {}
 let name2; // 声明一个变量 不给类型默认就是 any 类型

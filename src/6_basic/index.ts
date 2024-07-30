@@ -4,14 +4,14 @@
 
 
 
-// const fullname = ({ firstName, lastName }: {
+// const fullName = ({ firstName, lastName }: {
 //   firstName: string,
 //   lastName: string
 // }) => {
 //   return firstName + lastName;
 // } 
 
-// fullname({
+// fullName({
 //   firstName: 'xu',
 //   lastName: 'lei'
 // })
@@ -68,7 +68,7 @@
 //   return click.count ++;
 // }
 
-// // 为了防止这个 click 函数被重新赋值， let 是可以修改的，如果const 就不一样了饿
+// // 为了防止这个 click 函数被重新赋值， let 是可以修改的，如果const 就不一样了
 // click.count = 0;
 
 // 一般情况下， 使用接口大概率都是描述对象

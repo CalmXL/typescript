@@ -1,6 +1,5 @@
 // & 交叉类型 和 unknown
 
-
 // interface Person1 {
 //   handsome: string;
 //   n: {
@@ -17,13 +16,21 @@
 
 // type Person3 = Person1 & Person2;
 
+// type Computed<T> = {
+//   [K in keyof T]: T[K]
+// }
+
+// type p = Computed<Person3>;
+
 // let p3: Person3 = {
 //   handsome: '帅',
 //   high: '高',
 //   n: {
-//     n: 1 as never // 如果类型冲突会出现 never 
+//     n: 1 // 如果类型冲突会出现 never 
 //   }
 // } 
+
+// -------------------------------------------
 
 // function mixin<T, K>(o1: T, o2: K) {
 //   return {

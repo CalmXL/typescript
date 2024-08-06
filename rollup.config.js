@@ -12,15 +12,16 @@ console.log(__dirname, __filename);
 // => /Users/xulei/code/js++/i/zhufeng/ts/rollup.config.js
 
 export default {
-  input: resolve(__dirname, 'src/16_basic/index.ts'),
+  input: resolve(__dirname, 'src/18_axios/index.ts'),
   output: {
-    format: 'iife',
+    format: 'es',
     file: resolve(__dirname, 'dist/bundle.js'),
     sourcemap: true
   },
   plugins: [
     nodeResolve({
-      extensions: ['.js', '.ts']
+      extensions: ['.js', '.ts'],
+      browser: true
     }),
     ts({
       tsconfig: resolve(__dirname, 'tsconfig.json')

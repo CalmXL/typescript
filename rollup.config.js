@@ -13,8 +13,9 @@ console.log(__dirname, __filename);
 
 export default {
   input: resolve(__dirname, 'src/18_axios/index.ts'),
+  input: resolve(__dirname, 'src/18_axios/index.ts'),
   output: {
-    format: 'iife',
+    format: 'es',
     file: resolve(__dirname, 'dist/bundle.js'),
     sourcemap: true, // 当前代码在浏览器中使用
   },

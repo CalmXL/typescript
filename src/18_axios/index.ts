@@ -1,5 +1,4 @@
-// import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
-import axios, { AxiosRequestConfig, AxiosResponse } from '../../libs/axios';
+import axios, { AxiosRequestConfig, AxiosResponse } from './axios/index';
 
 // 基础路径
 const baseURL = 'http://localhost:8080';
@@ -13,20 +12,33 @@ interface Person {
 
 let person: Person = {
   name: 'xl',
-  age: 28,
+  age: 29,
 };
 
-let requestConfig: AxiosRequestConfig = {
+let reqConfig: AxiosRequestConfig = {
   url: baseURL + '/get',
   method: 'GET',
   params: person,
 };
 
-// 希望的返回值
-axios(requestConfig)
-  .then((response: AxiosResponse<Person>) => {
-    console.log(response.data);
+axios(reqConfig)
+  .then((res: AxiosResponse<Person>) => {
+    console.log(res);
   })
-  .catch((error: any) => {
-    console.log(error);
+  .catch((err) => {
+    console.log(err);
+  });
+
+let reqConfig2: AxiosRequestConfig = {
+  url: baseURL + '/get',
+  method: 'GET',
+  data: person,
+};
+
+axios<Person>(reqConfig2)
+  .then((res) => {
+    console.log(res);
+  })
+  .catch((err) => {
+    console.log(err);
   });

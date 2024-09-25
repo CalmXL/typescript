@@ -1,4 +1,4 @@
-import axios, { AxiosRequestConfig, AxiosResponse } from './axios/index';
+import axios, { AxiosRequestConfig, AxiosResponse } from '../../libs/axios';
 
 // 基础路径
 const baseURL = 'http://localhost:8080';
@@ -15,30 +15,16 @@ let person: Person = {
   age: 29,
 };
 
-let reqConfig: AxiosRequestConfig = {
+let requestConfig: AxiosRequestConfig = {
   url: baseURL + '/get',
   method: 'GET',
   params: person,
 };
 
-axios(reqConfig)
-  .then((res: AxiosResponse<Person>) => {
-    console.log(res);
+axios(requestConfig)
+  .then((response: AxiosResponse<Person>) => {
+    console.log(response.data);
   })
-  .catch((err) => {
-    console.log(err);
-  });
-
-let reqConfig2: AxiosRequestConfig = {
-  url: baseURL + '/get',
-  method: 'GET',
-  data: person,
-};
-
-axios<Person>(reqConfig2)
-  .then((res) => {
-    console.log(res);
-  })
-  .catch((err) => {
-    console.log(err);
+  .catch((error) => {
+    console.log(error);
   });

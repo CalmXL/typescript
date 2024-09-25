@@ -2,6 +2,7 @@ import ts from 'rollup-plugin-typescript2';
 import serve from 'rollup-plugin-serve';
 import livereload from 'rollup-plugin-livereload';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
+import commonjs from '@rollup/plugin-commonjs';
 import { fileURLToPath } from 'url';
 import { dirname, resolve } from 'path';
 
@@ -13,13 +14,13 @@ console.log(__dirname, __filename);
 
 export default {
   input: resolve(__dirname, 'src/18_axios/index.ts'),
-  input: resolve(__dirname, 'src/18_axios/index.ts'),
   output: {
     format: 'es',
     file: resolve(__dirname, 'dist/bundle.js'),
     sourcemap: true, // 当前代码在浏览器中使用
   },
   plugins: [
+    commonjs(),
     nodeResolve({
       extensions: ['.js', '.ts'],
       browser: true,

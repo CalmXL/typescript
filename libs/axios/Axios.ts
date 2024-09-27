@@ -1,6 +1,7 @@
 import { AxiosRequestConfig, AxiosResponse } from './index';
 import qs from 'qs';
 import parseHeaders from 'parse-headers';
+import parseHeaders from 'parse-headers';
 
 class Axios {
   request<T>(config: AxiosRequestConfig): Promise<AxiosResponse<T>> {
@@ -30,6 +31,7 @@ class Axios {
 
       request.open(method!, url!, true);
       request.responseType = 'json';
+      request.send();
 
       if (headers) {
         for (let key in headers) {

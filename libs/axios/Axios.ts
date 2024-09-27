@@ -5,7 +5,9 @@ import {
 } from './index';
 import qs from 'qs';
 import parseHeaders from 'parse-headers';
-import AxiosInterceptorManager from './AxiosInterceptorsManager';
+import AxiosInterceptorManager, {
+  Interceptor,
+} from './AxiosInterceptorsManager';
 
 class Axios {
   public interceptors = {
@@ -14,12 +16,38 @@ class Axios {
   };
 
   request<T>(config: AxiosRequestConfig): Promise<AxiosResponse<T>> {
+    const chain: (
+      | Interceptor<InternalAxiosRequestConfig>
+      | Interceptor<AxiosResponse>
+    )[] = [{ onFulfilled: this.dispatchRequest }];
+
+    this.interceptors.request.interceptors.forEach((interceptor) => {
+      interceptor && chain.unshift(interceptor);
+    });
+
+    this.interceptors.response.interceptors.forEach((interceptor) => {
+      interceptor && chain.push(interceptor);
+    });
+
+    // 构建一个每次执行后返回的 promise
+    let promise: Promise<AxiosRequestConfig | AxiosResponse> =
+      Promise.resolve(config);
+
+    // 通过 promise 链处理拦截器
+    while (chain.length) {
+      const { onFulfilled, onRejected } = chain.shift()!;
+      promise = promise.then(
+        onFulfilled as (v: AxiosRequestConfig | AxiosResponse) => any,
+        onRejected
+      );
+    }
+    return promise as Promise<AxiosResponse<T>>;
     // 发送请求需要对我们的配置进行合并，进行修改等操作
     // 1. 对配置进行合并， 默认值
     // 2. 拦截器
 
     // 3. 发送请求
-    return this.dispatchRequest(config);
+    // return this.dispatchRequest(config);
   }
 
   dispatchRequest<T>(config: AxiosRequestConfig): Promise<AxiosResponse<T>> {

@@ -1,7 +1,7 @@
 type OnFulfilled<V> = (value: V) => V | Promise<V>;
 type OnRejected = (error: any) => any;
 
-interface Interceptor<V> {
+export interface Interceptor<V> {
   onFulfilled?: OnFulfilled<V>;
   onRejected?: OnRejected;
 }

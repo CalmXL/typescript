@@ -14,7 +14,7 @@ class Axios {
 
   dispatchRequest<T>(config: AxiosRequestConfig): Promise<AxiosResponse<T>> {
     return new Promise((resolve, reject) => {
-      let { url, method, params } = config;
+      let { url, method, params, headers, data, timeout } = config;
 
       const request = new XMLHttpRequest();
 
@@ -30,7 +30,27 @@ class Axios {
 
       request.open(method!, url!, true);
       request.responseType = 'json';
-      request.send();
+
+      if (headers) {
+        for (let key in headers) {
+          request.setRequestHeader(key, headers[key]);
+        }
+      }
+
+      let requestBody: null | string = null;
+      if (data) {
+        requestBody = JSON.stringify(data);
+      }
+
+      if (timeout) {
+        request.timeout = timeout;
+
+        request.ontimeout = () => {
+          reject('errorAxiosError: timeout of' + timeout + 'exceeded');
+        };
+      }
+
+      request.send(requestBody);
 
       request.onreadystatechange = () => {
         // 请求发送成功， status === 0 请求网络异常
@@ -48,8 +68,17 @@ class Axios {
             };
 
             resolve(response);
+          } else {
+            reject(
+              'errorAxiosError: Request failed with status code' +
+                request.status
+            );
           }
         }
+      };
+
+      request.onerror = () => {
+        reject('net: ERR_INTERNET_DISCONNECTED');
       };
     });
   }

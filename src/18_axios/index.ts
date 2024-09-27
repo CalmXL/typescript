@@ -1,7 +1,8 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from '../../libs/axios';
+// import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 
 // 基础路径
-const baseURL = 'http://localhost:8080';
+const baseURL = 'http://localhost:3300';
 
 // 发送 get 请求 和 post
 
@@ -15,10 +16,31 @@ let person: Person = {
   age: 29,
 };
 
+// let requestConfig: AxiosRequestConfig = {
+//   url: baseURL + '/get',
+//   method: 'GET',
+//   params: person,
+// };
+
+// let requestConfig: AxiosRequestConfig = {
+//   url: baseURL + '/post',
+//   method: 'POST',
+//   // http 特性协商数据
+//   headers: {
+//     'Content-Type': 'application/json',
+//   },
+//   data: person,
+// };
+
 let requestConfig: AxiosRequestConfig = {
-  url: baseURL + '/get',
-  method: 'GET',
-  params: person,
+  url: baseURL + '/post_timeout?timeout=2000',
+  method: 'POST',
+  // http 特性协商数据
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  data: person,
+  timeout: 1000,
 };
 
 axios(requestConfig)
@@ -28,3 +50,10 @@ axios(requestConfig)
   .catch((error) => {
     console.log(error);
   });
+
+/**
+ * 失败情况？
+ * 1. 网络挂了
+ * 2. 根据状态码决定失败
+ * 3. 超时处理
+ */

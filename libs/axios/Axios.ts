@@ -8,6 +8,7 @@ import parseHeaders from 'parse-headers';
 import AxiosInterceptorManager, {
   Interceptor,
 } from './AxiosInterceptorsManager';
+import { CancelTokenStatic } from 'axios';
 
 class Axios {
   public interceptors = {
@@ -85,6 +86,13 @@ class Axios {
         for (let key in headers) {
           request.setRequestHeader(key, headers[key]);
         }
+      }
+
+      if (config.cancelToken) {
+        config.cancelToken.then((message) => {
+          request.abort();
+          reject(message);
+        });
       }
 
       request.send(requestBody);

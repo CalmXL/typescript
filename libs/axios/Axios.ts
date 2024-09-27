@@ -1,7 +1,6 @@
 import { AxiosRequestConfig, AxiosResponse } from './index';
 import qs from 'qs';
 import parseHeaders from 'parse-headers';
-import parseHeaders from 'parse-headers';
 
 class Axios {
   request<T>(config: AxiosRequestConfig): Promise<AxiosResponse<T>> {
@@ -31,13 +30,6 @@ class Axios {
 
       request.open(method!, url!, true);
       request.responseType = 'json';
-      request.send();
-
-      if (headers) {
-        for (let key in headers) {
-          request.setRequestHeader(key, headers[key]);
-        }
-      }
 
       let requestBody: null | string = null;
       if (data) {
@@ -46,10 +38,15 @@ class Axios {
 
       if (timeout) {
         request.timeout = timeout;
-
         request.ontimeout = () => {
-          reject('errorAxiosError: timeout of' + timeout + 'exceeded');
+          reject('errorAxiosError: timeout of ' + timeout + 'exceeded');
         };
+      }
+
+      if (headers) {
+        for (let key in headers) {
+          request.setRequestHeader(key, headers[key]);
+        }
       }
 
       request.send(requestBody);

@@ -5,9 +5,13 @@ function createInstance() {
   const context = new Axios();
 
   // 保证 this 永远指向 类的实例
-  const instance: AxiosInstance = Axios.prototype.request.bind(context);
+  let instance = Axios.prototype.request.bind(context);
 
-  return instance;
+  // context.interceptors.request.use
+  // context.interceptors.response.use
+  instance = Object.assign(instance, context);
+
+  return instance as AxiosInstance;
 }
 
 const axios = createInstance();

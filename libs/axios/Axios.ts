@@ -1,8 +1,18 @@
-import { AxiosRequestConfig, AxiosResponse } from './index';
+import {
+  AxiosRequestConfig,
+  AxiosResponse,
+  InternalAxiosRequestConfig,
+} from './index';
 import qs from 'qs';
 import parseHeaders from 'parse-headers';
+import AxiosInterceptorManager from './AxiosInterceptorsManager';
 
 class Axios {
+  public interceptors = {
+    request: new AxiosInterceptorManager<InternalAxiosRequestConfig>(),
+    response: new AxiosInterceptorManager<AxiosResponse>(),
+  };
+
   request<T>(config: AxiosRequestConfig): Promise<AxiosResponse<T>> {
     // 发送请求需要对我们的配置进行合并，进行修改等操作
     // 1. 对配置进行合并， 默认值
